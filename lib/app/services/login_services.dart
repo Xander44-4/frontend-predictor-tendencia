@@ -21,6 +21,9 @@ class LoginServices {
       LoginResponse goodResponse =LoginResponse.fromJson(decodedJson);
       return goodResponse;
     }
+    if(response.statusCode == 401){
+      return const LoginResponse(errorMessage: "Credenciales inválidas");
+    }
     return null;
 
 

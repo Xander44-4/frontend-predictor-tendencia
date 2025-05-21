@@ -2,17 +2,24 @@
 
 class LoginResponse {
 
-  final String user;
-  final String token;
+  final UserData? user;
+  final String? token;
+  final String? errorMessage;
 
   const LoginResponse({
-    required this.user,
-    required this.token
+    this.user,
+    this.token,
+    this.errorMessage
   });
 
   factory LoginResponse.fromJson(Map<String, dynamic> json){
 
-    return  LoginResponse( user: json["user_data"], token: json["token"]);
+    if(json.containsKey('detail')){
+      return LoginResponse(errorMessage: json['detail']);
+    }
+
+    return  LoginResponse( user: UserData.fromJson(json["user_data"]), token: json["token"]);
+
   }
 }
 
@@ -32,5 +39,28 @@ class LoginRequest {
     };
 
     return fieldPost;
+  }
+}
+
+
+class UserData {
+  final String id;
+  final String username;
+  final int age;
+  final String email;
+  final String password;
+
+  UserData({
+    required this.id,
+    required this.username,
+    required this.age,
+    required this.email,
+    required this.password
+ });
+
+  factory UserData.fromJson(Map<String, dynamic> json){
+
+    return UserData(id: json["_id"], username: json["username"],
+        age: json["age"], email: json["email"], password: json["password_hashed"]);
   }
 }
