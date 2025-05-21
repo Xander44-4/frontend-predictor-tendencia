@@ -7,10 +7,14 @@ environment:
   sdk: ^3.5.3
 
 dependencies:
+  curved_navigation_bar: ^1.0.6
   flutter:
     sdk: flutter
   font_awesome_flutter: ^10.4.0
   http: ^1.4.0
+  intl: ^0.20.2
+  quickalert: ^1.1.0
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:

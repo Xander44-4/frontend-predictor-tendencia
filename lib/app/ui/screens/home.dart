@@ -1,5 +1,8 @@
-import 'package:app_movil_pta/app/models/login_model.dart';
-import 'package:app_movil_pta/app/services/login_services.dart';
+
+import 'package:app_movil_pta/app/ui/screens/home_screens/history_screen.dart';
+import 'package:app_movil_pta/app/ui/screens/home_screens/mainpage_screen.dart';
+import 'package:app_movil_pta/app/ui/screens/home_screens/modes_screen.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 
 
@@ -11,112 +14,45 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int? indexOfBar = 1;
+  final itemsBottomBar = <Widget>[
+    const Icon(Icons.access_alarm),
+    const Icon(Icons.home),
+    const Icon(Icons.museum)
 
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final _formlogin = GlobalKey<FormState>();
+  ];
+  final screens = <Widget>[
+    const HistoryScreen(),
+    const MainScreen(),
+    const ModesScreen()
+  ];
 
-  Future<LoginResponse?>? _getUsers;
-  LoginServices getUsers = LoginServices();
-   LoginRequest? requestModel;
   @override
   void initState(){
     super.initState();
-    requestModel =  LoginRequest();
   }
-
   @override
   Widget build(BuildContext context) {
+
+
     return  Scaffold(
-      appBar: AppBar(title: const Text('home')),
-      body: Column(
-        children: [
-          Form(
-            key: _formlogin,
-            child:  Column(
-            children: [
-              TextFormField(
-                controller: _emailController,
-                validator: ( v){
-                  if(v == null || v.isEmpty){
-                    return 'ingrese un valor';
-                  }
-                  if( v.contains('[')){
-                    return "no puede contener charateres especiales '['";
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _passwordController ,
-                validator: (v){
-                  if(v == null || v.isEmpty){
-                    return 'este campo no puede ir vacio';
-                  }
-                  if(v.length < 5){
-                    return 'contraseña muy corta';
-                  }
-                  return null;
+      backgroundColor: Colors.white,
+      body: SafeArea(child: screens[indexOfBar!])
 
-                },
-              ),
-              ElevatedButton(onPressed: () async{
-                if(_formlogin.currentState!.validate())
-                {
-                  _formlogin.currentState!.save();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                   const SnackBar(content: Text('procesando'))
-                  );
-                  requestModel!.email = _emailController.text;
-                  requestModel!.password = _passwordController.text;
-
-                  final response = await getUsers.fetchData(requestModel!);
-
-                  if (response != null) {
-
-                    print('Token: ${response.token}');
-                  } else {
-                    print('Error al iniciar sesión');
-                  }
-
-                  _formlogin.currentState!.reset();
-                }
-
-
-              }, child: const Text('submit'))
-            ],
-          )),
-
-
-          ElevatedButton(
-            onPressed: () async {
-              requestModel!.email = 'Pri@example.com';
-              requestModel!.password = 'dagamer_panda'; // tu contraseña hardcodeada
-
-
-            },
-            child: const Text('Click'),
-          ),
-
-
-          FutureBuilder(future: _getUsers, builder:(context, shapshot){
-              if(shapshot.connectionState == ConnectionState.waiting){
-                return const CircularProgressIndicator();
-              }else if(shapshot.hasError){
-                return Text("Error: ${shapshot.error}");
-              }else if(shapshot.hasData){
-                return  Text(" ${shapshot.data!.token}");
-              }
-
-              else{
-                return const Text('otra cosa');
-              }
-
-          })
-        ],
+     ,
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(
+          iconTheme: const IconThemeData(color: Colors.white)
+        ),
+        child: CurvedNavigationBar(
+          color: Colors.black,
+          buttonBackgroundColor: Colors.blue,
+          backgroundColor: Colors.transparent,
+            index: 1,
+            items: itemsBottomBar,
+            onTap: (i) => setState(() => indexOfBar = i)
+        ),
       ),
-
-
     );
   }
 }

@@ -4,12 +4,16 @@ class InputX extends StatefulWidget {
   final String placeHolderTxt;
   final IconData customIcon;
   final bool isPassword;
+  final TextEditingController controller;
+  final String? Function(String?)? validator;
 
   const InputX({
     super.key,
     required this.placeHolderTxt,
     required this.customIcon,
-    required this.isPassword
+    required this.isPassword,
+    required this.controller,
+    required this.validator,
   });
 
   @override
@@ -22,6 +26,8 @@ class _InputXState extends State<InputX> {
     return Container(
       margin: const EdgeInsets.all(20),
       child: TextFormField(
+        controller: widget.controller,
+        validator: widget.validator,
         textAlign: TextAlign.left,
         decoration: InputDecoration(
           prefixIcon:Icon(widget.customIcon),

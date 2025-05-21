@@ -5,7 +5,9 @@ import 'package:http/http.dart' as http;
 class LoginServices {
 
   Future<LoginResponse?> fetchData(LoginRequest request ) async {
-    String url = 'http://10.0.2.2:8000/login';
+      String url = 'http://192.168.18.39:8000/login';
+    //pruebas en el cel: 192.168.18.39:8000
+
     final response =
         await http.post(Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
@@ -21,9 +23,10 @@ class LoginServices {
       LoginResponse goodResponse =LoginResponse.fromJson(decodedJson);
       return goodResponse;
     }
+    if(response.statusCode == 401){
+      return const LoginResponse(errorMessage: "Credenciales inválidas");
+    }
     return null;
-
-
 
 
   }

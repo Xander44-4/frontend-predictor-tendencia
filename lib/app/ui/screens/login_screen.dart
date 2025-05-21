@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/custom_input.dart';
 import '../widgets/custom_elevatedbtn.dart';
-
-
+import 'package:app_movil_pta/app/models/login_model.dart';
+import 'package:app_movil_pta/app/services/login_services.dart';
 
 
 
@@ -37,6 +38,21 @@ class _LoginBody extends StatefulWidget{
 }
 
 class _LoginBodyState extends State<_LoginBody> {
+
+  final SharedPreferencesAsync asyncUser = SharedPreferencesAsync();
+
+
+  //controladores de input
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  //llave formulario
+  final _formKey = GlobalKey<FormState>();
+
+  //ahora lo duro el fetch
+
+  final _fetchLogin = LoginServices();
+  final _requestModel = LoginRequest();
+
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -52,7 +68,6 @@ class _LoginBodyState extends State<_LoginBody> {
             padding:const EdgeInsets.only(top: 15),
             child: Stack(
               children: [
-
                 Padding(
                   padding:  const EdgeInsets.only(top: 30 , left: 20),
                   child: Column(
@@ -63,26 +78,83 @@ class _LoginBodyState extends State<_LoginBody> {
                             fontStyle:FontStyle.italic, fontWeight: FontWeight.bold),
                       ),
                         const Text('welcome to my app', style: TextStyle(color: Colors.white, fontSize: 15)),
-                      const InputX(placeHolderTxt: 'Gmail', customIcon: Icons.email, isPassword: false),
-                      const InputX(placeHolderTxt: 'Password', customIcon: Icons.abc, isPassword: true),
-                      SizedBox(
-                        width: 200,
-                        child: ElevatedButton(onPressed: (){
-                           Navigator.pushNamed(context, '/home');
-                        }, child: const Text('Login')),
-                      )
+                       Form(
+                           key: _formKey,
+                         child: Column(
+                         children: [
+                           InputX(placeHolderTxt: 'Gmail', customIcon: Icons.email, isPassword: false,
+                             controller: _emailController,
+                             validator: (v){
+                               if(v == null || v.isEmpty){
+                                 return 'ingrese un valor';
+                               }
+                               if( v.contains('[')){
+                                 return "no puede contener charateres especiales '['";
+                               }
+                               return null;
+                             },
 
+                           ),
+                           InputX(placeHolderTxt: 'Password', customIcon: Icons.abc, isPassword: true ,
+                             controller: _passwordController,
+                             validator: (v){
+                               if(v == null || v.isEmpty){
+                                 return 'ingrese un valor';
+                               }
+                               if( v.contains('[')){
+                                 return "no puede contener charateres especiales '['";
+                               }
+                               return null;
+                             },
+                           ),
+                           SizedBox(
+                             width: 200,
+                             child: ElevatedButton(onPressed: () async{
+                               if(_formKey.currentState!.validate())
+                               {
+                                 _formKey.currentState!.save();
+
+                                  _requestModel.email = _emailController.text;
+                                  _requestModel.password = _passwordController.text;
+
+                                  final responseFetch = await _fetchLogin.fetchData(_requestModel);
+
+                                  if( responseFetch != null ){
+                                    if(responseFetch.errorMessage != null){
+                                    mostrarAlerta(  context, responseFetch.errorMessage.toString());
+                                    }
+                                    if(responseFetch.errorMessage == null){
+                                      print(responseFetch.user?.age);
+                                      Navigator.pushNamed(context, '/home');
+                                      await asyncUser.setString('username', responseFetch.user!.username);
+                                      await asyncUser.setString('id', responseFetch.user!.id);
+                                    }
+
+                                  }
+
+                                  if(responseFetch == null){
+                                    print('error Lidel verifique que hizo mal');
+                                  }
+
+                                  
+                                 _formKey.currentState!.reset();
+                               }
+                              //
+                             }, child: const Text('Login')),
+                           )
+
+                         ],
+                       ))
+                      ,
                     ],
 
                   ),
 
                 ),
-
-
                 DraggableScrollableSheet(
-                    initialChildSize: 0.5,
-                    minChildSize: 0.4,
-                    maxChildSize: 0.5,
+                    initialChildSize: 0.3,
+                    minChildSize: 0.2,
+                    maxChildSize: 0.4,
                     builder: (context,controller){
 
                   return  Container(
@@ -150,6 +222,28 @@ class _LoginBodyState extends State<_LoginBody> {
     );
   }
 }
+
+void mostrarAlerta(BuildContext context, String mensaje) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text("Error"),
+        content: Text(mensaje),
+        actions: [
+          TextButton(
+            child: const Text("Cerrar"),
+            onPressed: () {
+              Navigator.of(context).pop(); // Cierra el diálogo
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+
 
 
 
