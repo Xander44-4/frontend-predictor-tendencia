@@ -22,7 +22,7 @@ class _ModesScreenState extends State<ModesScreen> {
   var modes =['Media Móvil Simple (SMA)Crossover','Regresion Lineal', 'Momentum (ROC)'];
 
   String? value;
-  int valuesToPredict= 5;
+  int valuesToPredict= 6;
   final  SharedPreferencesAsync asyncUser = SharedPreferencesAsync();
   String? userId;
   final _formKey = GlobalKey<FormState>();
@@ -84,6 +84,7 @@ class _ModesScreenState extends State<ModesScreen> {
   Widget build(BuildContext context) {
     updateControllers(valuesToPredict);
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
@@ -162,7 +163,7 @@ class _ModesScreenState extends State<ModesScreen> {
                         onFieldSubmitted: (value){
                         int numero = int.parse(value);
                         if(numero < 5){
-                          mostrarAlerta(context, 'menor de 5 valores de activos no se puede realizar el calculo adecuadamente');
+                          mostrarAlerta(context, 'menor de 6 valores de activos no se puede realizar el calculo adecuadamente');
                         }
                         if(numero >= 5){ setState(() {
                           valuesToPredict = numero;
@@ -170,7 +171,7 @@ class _ModesScreenState extends State<ModesScreen> {
                         },
                       textAlign: TextAlign.center,
                       decoration: InputDecoration(
-                        hintText: 'Only 5+ values',
+                        hintText: 'Only 6+ values',
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),

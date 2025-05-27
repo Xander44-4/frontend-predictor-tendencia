@@ -77,7 +77,7 @@ class _LoginBodyState extends State<_LoginBody> {
                         style: TextStyle(fontSize: 50, color: Colors.white,
                             fontStyle:FontStyle.italic, fontWeight: FontWeight.bold),
                       ),
-                        const Text('welcome to my app', style: TextStyle(color: Colors.white, fontSize: 15)),
+                        const Text('Bienvenido al Predictor de Valores', style: TextStyle(color: Colors.white, fontSize: 15)),
                        Form(
                            key: _formKey,
                          child: Column(
@@ -86,7 +86,7 @@ class _LoginBodyState extends State<_LoginBody> {
                              controller: _emailController,
                              validator: (v){
                                if(v == null || v.isEmpty){
-                                 return 'ingrese un valor';
+                                 return 'ingrese su correo';
                                }
                                if( v.contains('[')){
                                  return "no puede contener charateres especiales '['";
@@ -99,7 +99,7 @@ class _LoginBodyState extends State<_LoginBody> {
                              controller: _passwordController,
                              validator: (v){
                                if(v == null || v.isEmpty){
-                                 return 'ingrese un valor';
+                                 return 'ingrese su contraseña';
                                }
                                if( v.contains('[')){
                                  return "no puede contener charateres especiales '['";
@@ -140,7 +140,12 @@ class _LoginBodyState extends State<_LoginBody> {
                                  _formKey.currentState!.reset();
                                }
                               //
-                             }, child: const Text('Login')),
+                             }, style: ButtonStyle(
+                               foregroundColor: WidgetStateProperty.all(Colors.black),
+
+                             ),
+                                 child: const Text('Login')),
+                             
                            )
 
                          ],
@@ -152,14 +157,14 @@ class _LoginBodyState extends State<_LoginBody> {
 
                 ),
                 DraggableScrollableSheet(
-                    initialChildSize: 0.3,
-                    minChildSize: 0.2,
+                    initialChildSize: 0.1,
+                    minChildSize: 0.1,
                     maxChildSize: 0.4,
                     builder: (context,controller){
 
                   return  Container(
 
-                    decoration: const BoxDecoration(color: Colors.grey,
+                    decoration: const BoxDecoration(color: Colors.white,
                       borderRadius: BorderRadius.only(
                         topRight: Radius.circular(30),
                         topLeft: Radius.circular(30),
@@ -174,23 +179,17 @@ class _LoginBodyState extends State<_LoginBody> {
                             Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-
-                                Container(
-                                    margin: const EdgeInsets.only(left: 5, top: 10),
-                                    child: FloatingActionButton(
-                                        heroTag: null,
-                                        onPressed: (){}, foregroundColor: Colors.black,
-                                        backgroundColor: Colors.grey,child:
-                                        const Icon(Icons.arrow_back))
-                                ),
+                                const Spacer(),
+                                const SizedBox(width: 50,),
                                 const Text('Sign In', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                                const Spacer(),
                                 Container(
-                                    margin: const EdgeInsets.only(left: 5, top: 10),
-                                    child: FloatingActionButton(
-                                        heroTag: null,
-                                        onPressed: (){}, foregroundColor: Colors.black,
-                                        backgroundColor: Colors.grey,child:
-                                        const Icon(Icons.close))
+
+                                    padding: const EdgeInsets.only(top: 5, right: 5),
+                                    child: IconButton(
+                                        onPressed: (){},
+                                        color: Colors.grey,
+                                        icon: const Icon(FontAwesomeIcons.angleUp))
                                 )
                               ],
 
@@ -200,14 +199,21 @@ class _LoginBodyState extends State<_LoginBody> {
                               margin: const EdgeInsets.only(top: 20,left: 20,right:20, bottom:9 ),
                                 child: const ElevatedBtnX(widthContainer: EdgeInsets.only(),
                                     iconBtn: FontAwesomeIcons.google,
-                                    textBtn: 'Continue with Google')
+                                    textBtn: 'Continue with Google',
+                                  backgroundColor: WidgetStatePropertyAll(Colors.white70),
+
+                                ),
+
                             ),
                             Container(
                                 margin: const EdgeInsets.only(bottom: 20,left: 20,right:20 ),
                                 child: const ElevatedBtnX(widthContainer: EdgeInsets.only(),
                                     iconBtn: FontAwesomeIcons.facebook,
-                                    textBtn: 'Continue with Facebook')
-                            )
+                                    textBtn: 'Continue with Facebook',
+                                    backgroundColor: WidgetStatePropertyAll(Colors.blue),
+                                )
+                            ),
+                            const Center(child: Text('© 2025 Xander'),)
                           ],
                         ),
                       )
